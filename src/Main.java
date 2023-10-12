@@ -8,7 +8,6 @@ public class Main {
             public void run() {
                 new TicTacToeGui().setVisible(true);
             }
-
         });
     }
 }

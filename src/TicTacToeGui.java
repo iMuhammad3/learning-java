@@ -1,8 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class TicTacToeGui extends JFrame{
+public class TicTacToeGui extends JFrame implements ActionListener {
 
+    private int xScore, oScore, moveCounter;
+    // isPlayerOne - flag to indicate it current player is player x or not
+    private boolean isPlayerOne;
     private JLabel turnLabel, scoreLabel;
     private JButton[][] board;
 
@@ -17,6 +22,7 @@ public class TicTacToeGui extends JFrame{
 
         //init vars
         board = new JButton[3][3];
+        isPlayerOne = true;
 
         addGuiComponent();
     }
@@ -69,6 +75,7 @@ public class TicTacToeGui extends JFrame{
                 button.setPreferredSize(CommonConstants.BUTTON_SIZE);
                 button.setBackground(CommonConstants.BACKGROUND_COLOR);
                 button.setOpaque(true);
+                button.addActionListener(this);
                 button.setBorder(BorderFactory.createLineBorder(CommonConstants.BOARD_COLOR));
 
                 // add button to board
@@ -81,6 +88,7 @@ public class TicTacToeGui extends JFrame{
         //reset button
         JButton resetButton = new JButton("Reset");
         resetButton.setFont(new Font("Dialog", Font.PLAIN, 24));
+        resetButton.addActionListener(this);
         resetButton.setBackground(CommonConstants.BOARD_COLOR);
         resetButton.setBounds(
                 (CommonConstants.FRAME_SIZE.width - resetButton.getPreferredSize().width)/2,
@@ -94,5 +102,62 @@ public class TicTacToeGui extends JFrame{
         getContentPane().add(scoreLabel);
         getContentPane().add((boardPanel));
         getContentPane().add(resetButton);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String command = e.getActionCommand();
+        if(command.equals("Reset")){
+            resetGame();
+        } else {
+            // player move
+            JButton button = (JButton) e.getSource();
+            if(button.getText().equals((""))){
+                moveCounter++;
+
+                // mark the button with x/o if its not empty
+                if(isPlayerOne){
+                    button.setText(CommonConstants.X_LABEL);
+                    button.setForeground(CommonConstants.X_COLOR);
+
+                    // update turn label
+                    turnLabel.setText(CommonConstants.O_LABEL);
+                    turnLabel.setBackground(CommonConstants.O_COLOR);
+
+                    //update turn
+                    isPlayerOne = false;
+                } else {
+                    // player two
+                    button.setText(CommonConstants.O_LABEL);
+                    button.setForeground(CommonConstants.O_COLOR);
+
+                    //update turn label
+                    turnLabel.setText(CommonConstants.X_LABEL);
+                    turnLabel.setBackground(CommonConstants.X_COLOR);
+
+                    // update turn
+                    isPlayerOne = true;
+                }
+            }
+            repaint();
+            revalidate();
+        }
+    }
+
+    private void resetGame(){
+        // reset player back to x
+        isPlayerOne = true;
+        turnLabel.setText((CommonConstants.X_LABEL));
+        turnLabel.setBackground(CommonConstants.X_COLOR);
+
+        // reset score
+        scoreLabel.setText(CommonConstants.SCORE_LABEL);
+
+        // reset board
+        for(int i = 0;i < board.length;i++){
+            for(int j = 0;j < board[i].length; j++){
+                board[i][j].setText("");
+            }
+        }
     }
 }
