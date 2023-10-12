@@ -142,6 +142,13 @@ public class TicTacToeGui extends JFrame implements ActionListener {
             repaint();
             revalidate();
         }
+        // check win conditions
+        if(isPlayerOne){
+            // check if the last move rom O was the winning move
+            checkOWin();
+        }{
+            checkXWin();
+        }
     }
 
     private void resetGame(){
